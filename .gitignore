@@ -1,0 +1,9 @@
+# Working area of this repository (drafts, research, coverage notes). Never published.
+.playbook/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
