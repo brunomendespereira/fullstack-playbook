@@ -1,0 +1,21 @@
+{
+  "name": "fullstack-playbook",
+  "version": "1.0.0",
+  "description": "One skill for coding agents: full-stack development workflow and engineering principles, from idea to release.",
+  "keywords": ["claude-code", "agent-skill", "skills", "coding-agent", "ai", "workflow", "fullstack", "playbook"],
+  "homepage": "https://github.com/brunomendespereira/fullstack-playbook#readme",
+  "bugs": "https://github.com/brunomendespereira/fullstack-playbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunomendespereira/fullstack-playbook.git"
+  },
+  "license": "MIT",
+  "author": "Bruno Mendes",
+  "files": [
+    "skills/",
+    "README.pt-BR.md",
+    "CREDITS.md",
+    "CONTRIBUTING.md",
+    "!**/__pycache__"
+  ]
+}
