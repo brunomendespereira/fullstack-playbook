@@ -33,3 +33,17 @@ Products that use the skill mark universal lessons as `Playbook candidate` in th
 ```
 python3 -m unittest discover tests
 ```
+
+## Releasing a version
+
+1. Pick the number with Semantic Versioning: patch when existing notebooks need nothing; minor
+   for a new rule, field or step; major when an existing notebook can no longer be read as before.
+2. Set the same number in `package.json` and in `metadata.version` of `SKILL.md`. A test fails if
+   they differ.
+3. If existing notebooks need something: a new field goes in `templates/context.md` (the upgrade
+   script adds it); anything that needs a decision goes in a `### X.Y.Z` section of
+   `workflow/upgrade.md`.
+4. Add the version to `CHANGELOG.md`, with its "Upgrading" line.
+5. Update both READMEs when what users see changes.
+6. Close every pending item first, run the tests, then one commit, one tag `vX.Y.Z`, one push and
+   one `npm publish`.

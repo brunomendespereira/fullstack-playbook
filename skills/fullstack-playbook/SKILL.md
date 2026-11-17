@@ -4,7 +4,7 @@ description: "Full-stack development workflow and engineering principles for bui
 license: MIT
 metadata:
   repository: https://github.com/brunomendespereira/fullstack-playbook
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 # fullstack-playbook

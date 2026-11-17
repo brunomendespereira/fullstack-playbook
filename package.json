@@ -1,6 +1,6 @@
 {
   "name": "fullstack-playbook",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "One skill for coding agents: full-stack development workflow and engineering principles, from idea to release.",
   "keywords": ["claude-code", "agent-skill", "skills", "coding-agent", "ai", "workflow", "fullstack", "playbook"],
   "homepage": "https://github.com/brunomendespereira/fullstack-playbook#readme",
@@ -14,6 +14,7 @@
   "files": [
     "skills/",
     "README.pt-BR.md",
+    "CHANGELOG.md",
     "CREDITS.md",
     "CONTRIBUTING.md",
     "!**/__pycache__"
