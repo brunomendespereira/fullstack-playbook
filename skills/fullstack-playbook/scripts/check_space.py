@@ -5,7 +5,8 @@ Usage: python3 <skill>/scripts/check_space.py [product folder]
 
 Errors: unknown task or project status, blockers that do not exist, a started task with an
 unanswered risk question, a locked test that changed, state.md pointing to a missing project or
-task, unknown requirement in context.md. Warnings: more open fronts than the product allows.
+task, unknown requirement in context.md, code_structure pointing to a missing decision record.
+Warnings: more open fronts than the product allows, no code_structure recorded in context.md.
 """
 import hashlib
 import pathlib
@@ -56,6 +57,13 @@ def main():
     for r in ctx.get("requirements") or []:
         if r not in nbk.REQUIREMENTS:
             errors.append(f"context.md: unknown requirement '{r}' (known: {', '.join(nbk.REQUIREMENTS)})")
+
+    structure = str(ctx.get("code_structure") or "").strip()
+    if not structure:
+        warnings.append("context.md: code_structure is empty. Record the code organization (principles/architecture.md, "
+                        "\"Code organization\") and point this field to its decision record.")
+    elif not ((root / structure).exists() or (nb / structure).exists()):
+        errors.append(f"context.md: code_structure points to '{structure}', which does not exist")
 
     projects = {}
     active = 0

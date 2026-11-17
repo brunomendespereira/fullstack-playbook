@@ -23,12 +23,13 @@ The manual says what is right. The notebook says how it applies here. When they 
 - **Never print or commit secrets.** Mask tokens, passwords and connection strings in every output.
 - **If something must happen every time, make it a check** (git hook, CI, script), not a reminder.
 - **Ask one question at a time**, with a suggested answer, in plain text.
+- **Put new code where the product's structure says:** before creating a file or folder, read "Code structure" in `context.md`. When no row covers it, ask, then add the row (`principles/architecture.md`).
 - **Save every file where it belongs** (research, reviews, QA, drafts): the table in `workflow/tasks.md`, "Where files go". Agent folders hold only agent configuration.
 - **Write the notebook in the product's language** (`language` in `context.md`) and talk in the person's language. Keep field names and file names as they are.
 
 ## Start of every request
 
-1. Read `docs/playbook/state.md`, then `docs/playbook/context.md`. If `docs/playbook/` does not exist, read `workflow/onboarding.md` and run onboarding first. A quick question that changes nothing can be answered without onboarding.
+1. Read `docs/playbook/state.md`, then `docs/playbook/context.md`. If `docs/playbook/` does not exist, read `workflow/onboarding.md` and run onboarding first. A quick question that changes nothing can be answered without onboarding. If `code_structure` in `context.md` is empty, say so once, open a task for the architecture archaeology (`workflow/onboarding.md`) and go on with the request; until it is done, new files follow the most common existing place for their kind.
 2. Classify the request with the table below and read the files of its route.
 3. If the request changes code or data, answer the **risk questions** (in `workflow/stages.md`) in the task file; a small adjustment gets a one-line task in `projects/maintenance/`. Each "yes" adds a principle file and required tests.
 4. Read the principle files for the areas the change touches. Read nothing else.
@@ -59,7 +60,7 @@ The manual says what is right. The notebook says how it applies here. When they 
 | If the change... | Read |
 |---|---|
 | writes code at all | `principles/clean-code.md` and `principles/testing.md` |
-| adds structure, a module, a vendor or a library | `principles/architecture.md` |
+| creates a file or folder, adds a module, a vendor or a library | `principles/architecture.md` |
 | writes something that must not happen twice or get lost, receives outside events, or runs on a schedule | `principles/data-integrity.md` |
 | adds or changes an endpoint, login, permissions, personal data, or serves several customers; builds a query or command from input, renders user or model content, fetches a URL, accepts a file | `principles/security.md` |
 | changes what users see or read | `principles/interface.md` (and the product's `DESIGN.md`) |

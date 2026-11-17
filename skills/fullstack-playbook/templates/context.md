@@ -3,6 +3,7 @@ language:
 requirements: []
 sensitive_areas: []
 open_fronts_limit:
+code_structure:
 ---
 # Context
 
@@ -16,6 +17,15 @@ Which of these apply (also listed in the `requirements` field above): interface,
 
 ## Stack and tools
 Languages, frameworks, database, hosting. Each tool chosen after research is recorded in `decisions/`.
+
+## Code structure
+Read before creating any file or folder (`principles/architecture.md`, "Where a new file goes"). The `code_structure` field above points to the decision record that explains the choice.
+- **Priority attributes:** at most three, each a scenario with a measure.
+- **Organization:** the option chosen and why, in one or two lines.
+- **Map:** the main modules and what each one hides; "where is the thing that does X?".
+- **Placement:** one row per kind of thing: kind, folder, one-line decision test (for example "knows a business entity? its domain folder; only receives content? shared").
+- **Allowed directions:** who may import whom, and the check in `verify` that enforces it.
+- **Open exceptions:** known violations (the baseline) and migrations in progress, each with its task.
 
 ## Commands
 How to run, test, lint and build. Say where commands run (host or container).

@@ -161,6 +161,28 @@ class CheckSpace(Base):
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertEqual(list(tools.rglob("__pycache__")), [])
 
+    def set_structure(self, value):
+        ctx = self.dir / "docs" / "playbook" / "context.md"
+        ctx.write_text(ctx.read_text().replace("code_structure:\n", f"code_structure: {value}\n", 1))
+
+    def test_missing_code_structure_warns_without_failing(self):
+        r = self.check()
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("code_structure is empty", r.stdout)
+
+    def test_code_structure_pointing_to_a_record_passes_quietly(self):
+        write(self.dir / "docs" / "playbook" / "decisions" / "001-code-structure.md", "# Code structure\n")
+        self.set_structure("docs/playbook/decisions/001-code-structure.md")
+        r = self.check()
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertNotIn("code_structure", r.stdout)
+
+    def test_code_structure_pointing_to_a_missing_record_fails(self):
+        self.set_structure("docs/playbook/decisions/404.md")
+        r = self.check()
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("code_structure points to", r.stdout)
+
     def test_valid_task_passes(self):
         write(self.tasks / "001-coupon.md", TASK_OK)
         r = self.check()

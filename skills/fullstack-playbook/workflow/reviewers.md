@@ -39,6 +39,7 @@ You check the change against what was asked. Read the task and the plan first, t
 ## Brief: standards and simplification
 
 You check the code against the playbook and the product's rules. Read `principles/clean-code.md` and `principles/architecture.md`, then the diff.
+- Placement: each new file sits where the "Code structure" table of `context.md` says, imports follow its allowed directions, and no new kind of thing appears without a row. Cite the row.
 - Hard rules: layer direction, size limits from `context.md`, errors never swallowed, no secrets, one source of truth for each value, dates and money handled at one point.
 - Simpler is possible: duplicated logic that already exists elsewhere (name the existing function), a new abstraction with fewer than three uses, a flag that should be two components, code with no caller.
 - Code smells as judgment: mysterious names, long parameter lists, feature envy, shotgun surgery, speculative generality.
