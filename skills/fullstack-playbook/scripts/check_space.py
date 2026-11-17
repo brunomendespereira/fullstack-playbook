@@ -6,7 +6,8 @@ Usage: python3 <skill>/scripts/check_space.py [product folder]
 Errors: unknown task or project status, blockers that do not exist, a started task with an
 unanswered risk question, a locked test that changed, state.md pointing to a missing project or
 task, unknown requirement in context.md, code_structure pointing to a missing decision record.
-Warnings: more open fronts than the product allows, no code_structure recorded in context.md.
+Warnings: more open fronts than the product allows, no code_structure recorded in context.md, no
+playbook_version in context.md.
 """
 import hashlib
 import pathlib
@@ -58,6 +59,9 @@ def main():
         if r not in nbk.REQUIREMENTS:
             errors.append(f"context.md: unknown requirement '{r}' (known: {', '.join(nbk.REQUIREMENTS)})")
 
+    if not str(ctx.get("playbook_version") or "").strip():
+        warnings.append("context.md: playbook_version is missing. The notebook predates the skill's upgrade path: "
+                        "follow workflow/upgrade.md of the skill.")
     structure = str(ctx.get("code_structure") or "").strip()
     if not structure:
         warnings.append("context.md: code_structure is empty. Record the code organization (principles/architecture.md, "

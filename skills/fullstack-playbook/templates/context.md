@@ -4,6 +4,7 @@ requirements: []
 sensitive_areas: []
 open_fronts_limit:
 code_structure:
+playbook_version:
 ---
 # Context
 

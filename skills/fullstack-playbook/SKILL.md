@@ -4,6 +4,7 @@ description: "Full-stack development workflow and engineering principles for bui
 license: MIT
 metadata:
   repository: https://github.com/brunomendespereira/fullstack-playbook
+  version: 1.2.0
 ---
 
 # fullstack-playbook
@@ -29,12 +30,13 @@ The manual says what is right. The notebook says how it applies here. When they 
 
 ## Start of every request
 
-1. Read `docs/playbook/state.md`, then `docs/playbook/context.md`. If `docs/playbook/` does not exist, read `workflow/onboarding.md` and run onboarding first. A quick question that changes nothing can be answered without onboarding. If `code_structure` in `context.md` is empty, say so once, open a task for the architecture archaeology (`workflow/onboarding.md`) and go on with the request; until it is done, new files follow the most common existing place for their kind.
-2. Classify the request with the table below and read the files of its route.
-3. If the request changes code or data, answer the **risk questions** (in `workflow/stages.md`) in the task file; a small adjustment gets a one-line task in `projects/maintenance/`. Each "yes" adds a principle file and required tests.
-4. Read the principle files for the areas the change touches. Read nothing else.
-5. Work through the stages for the request's size. Run the product's triggers at each moment (`docs/playbook/triggers.md`, mechanism in `workflow/triggers.md`).
-6. Before stopping, also when blocked or waiting for an answer: update the task (status, and what blocks it), replace `docs/playbook/state.md` so it names that task and the next action, commit when verify passes, give the resume phrase, say which triggers ran (or that none applied), and list any memory entries marked `Playbook candidate` (`workflow/tasks.md`).
+1. Read `docs/playbook/state.md`, then `docs/playbook/context.md`. If `docs/playbook/` does not exist, read `workflow/onboarding.md` and run onboarding first. A quick question that changes nothing can be answered without onboarding.
+2. On the first request of a session, compare `playbook_version` in `context.md` with `version` in this file's `metadata`. If it is missing or older, upgrade the notebook first (`workflow/upgrade.md`), then go on.
+3. Classify the request with the table below and read the files of its route.
+4. If the request changes code or data, answer the **risk questions** (in `workflow/stages.md`) in the task file; a small adjustment gets a one-line task in `projects/maintenance/`. Each "yes" adds a principle file and required tests.
+5. Read the principle files for the areas the change touches. Read nothing else.
+6. Work through the stages for the request's size. Run the product's triggers at each moment (`docs/playbook/triggers.md`, mechanism in `workflow/triggers.md`).
+7. Before stopping, also when blocked or waiting for an answer: update the task (status, and what blocks it), replace `docs/playbook/state.md` so it names that task and the next action, commit when verify passes, give the resume phrase, say which triggers ran (or that none applied), and list any memory entries marked `Playbook candidate` (`workflow/tasks.md`).
 
 **Small path** (a text, color or config value, all risk answers "no"): even here, create `docs/playbook/projects/maintenance/tasks/NNN-short-name.md` from `templates/task.md` with the six risk answers, make the change, run `verify`, run the "change visible to users" trigger when users will see it, and close the task. If something stops you from closing it, mark it `blocked` and do step 6. No brief, no plan.
 
@@ -52,6 +54,7 @@ The manual says what is right. The notebook says how it applies here. When they 
 | Unclear or exploratory work | the foggy-work section of `workflow/stages.md` |
 | Merge, deploy, release, migration | `workflow/release.md` |
 | "Continue", status, new project, cleanup | `workflow/tasks.md` |
+| The notebook is older than the skill (`playbook_version`) | `workflow/upgrade.md` |
 | A new idea, report or request to sort | the triage section of `workflow/tasks.md` |
 | An automation or a "whenever X, do Y" rule | `workflow/triggers.md` |
 
@@ -77,6 +80,7 @@ The front-end or back-end view comes from these routes, not from folders: a scre
 
 Paths are relative to this skill's folder. Scripts need only Python 3 and print what they did.
 - `scripts/init_space.py --root . [--interface] [--install-hook]`: creates the notebook from `templates/`, including the gate `docs/playbook/verify.sh`. It never overwrites the product's files; it refreshes only its own pointer block and the checker copy in `docs/playbook/tools/`. `--install-hook` wires the gate as the git pre-commit hook (it never replaces an existing hook); ask before using it.
+- `scripts/upgrade_space.py .`: migrates a notebook from an older skill version: adds missing fields, refreshes the checker copy, records the version.
 - `scripts/check_space.py .`: checks the notebook (statuses, blockers, risk answers, locked tests, state). Exit 1 on errors.
 - `scripts/lock_tests.py lock|unlock <task> <test paths>`: locks tests written before the code; unlocking needs the approver and a reason.
 - `templates/`: context, state, triggers, memory, glossary, project-brief, project-plan, task, decision, review-report, pull-request, PRODUCT, DESIGN, agent-block, verify.sh.

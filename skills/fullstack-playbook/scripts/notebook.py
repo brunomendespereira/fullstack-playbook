@@ -82,6 +82,43 @@ def join(data, body):
     return "\n".join(lines) + "\n" + body.lstrip("\n")
 
 
+def skill_version(skill_dir):
+    """The skill's own version, from `metadata: version:` in SKILL.md ('' when absent)."""
+    m = re.search(r"^metadata:\n(?:[ \t]+.*\n)*?[ \t]+version:\s*([\w.-]+)", (pathlib.Path(skill_dir) / "SKILL.md").read_text(), re.M)
+    return m.group(1) if m else ""
+
+
+def version_key(value):
+    """'1.10.0' sorts after '1.9.0'. An empty or missing version counts as the oldest."""
+    return tuple(int(x) for x in re.findall(r"\d+", str(value or "0"))[:3])
+
+
+def set_top_fields(text, values, only_missing=()):
+    """Edit top-level frontmatter keys in place, keeping every other line as written.
+
+    `values` replaces (or adds) each key; keys in `only_missing` are added empty when absent."""
+    m = _FM.match(text)
+    if not m:
+        return text, []
+    lines = m.group(1).split("\n")
+    present = {line.partition(":")[0].strip() for line in lines if line and not line.startswith((" ", "\t"))}
+    changed = []
+    for i, line in enumerate(lines):
+        k = line.partition(":")[0].strip()
+        if line and not line.startswith((" ", "\t")) and k in values and _scalar(line.partition(":")[2]) != values[k]:
+            lines[i] = f"{k}: {values[k]}"
+            changed.append(k)
+    for k in only_missing:
+        if k not in present and k not in values:
+            lines.append(f"{k}:")
+            changed.append(k)
+    for k, v in values.items():
+        if k not in present:
+            lines.append(f"{k}: {v}")
+            changed.append(k)
+    return "---\n" + "\n".join(lines) + "\n---\n" + text[m.end():], changed
+
+
 def read(path):
     return split(pathlib.Path(path).read_text())
 

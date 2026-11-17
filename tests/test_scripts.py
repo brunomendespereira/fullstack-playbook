@@ -272,3 +272,68 @@ class LockTests(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+OLD_CONTEXT = """
+---
+language: pt-BR
+requirements: [interface, ai]
+sensitive_areas:
+  - payments
+open_fronts_limit: 2
+---
+# Context
+
+Written by the product. Must survive the upgrade.
+"""
+
+
+class UpgradeSpace(Base):
+    def setUp(self):
+        super().setUp()
+        self.ctx = self.dir / "docs" / "playbook" / "context.md"
+
+    def skill_version(self):
+        import json
+        return json.loads((ROOT / "package.json").read_text())["version"]
+
+    def test_skill_declares_the_package_version(self):
+        text = (SCRIPTS.parent / "SKILL.md").read_text()
+        self.assertIn(f"  version: {self.skill_version()}\n", text.split("---")[1])
+
+    def test_new_notebook_is_born_at_the_skill_version(self):
+        run("init_space.py", "--root", ".", cwd=self.dir)
+        self.assertIn(f"playbook_version: {self.skill_version()}", self.ctx.read_text())
+        r = run("upgrade_space.py", ".", cwd=self.dir)
+        self.assertIn("nothing to upgrade", r.stdout)
+
+    def test_old_notebook_gets_fields_version_and_judgment_steps(self):
+        write(self.ctx, OLD_CONTEXT)
+        r = run("check_space.py", ".", cwd=self.dir)
+        self.assertIn("playbook_version is missing", r.stdout)
+        r = run("upgrade_space.py", ".", cwd=self.dir)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        text = self.ctx.read_text()
+        self.assertIn("code_structure:\n", text)
+        self.assertIn(f"playbook_version: {self.skill_version()}", text)
+        self.assertIn("  - payments\nopen_fronts_limit: 2\n", text)
+        self.assertIn("Written by the product. Must survive the upgrade.", text)
+        self.assertIn("1.1.0", r.stdout)
+        self.assertTrue((self.dir / "docs" / "playbook" / "tools" / "check_space.py").exists())
+        self.assertEqual(list(self.dir.rglob("__pycache__")), [])
+
+    def test_upgrade_is_idempotent(self):
+        write(self.ctx, OLD_CONTEXT)
+        run("upgrade_space.py", ".", cwd=self.dir)
+        once = self.ctx.read_text()
+        r = run("upgrade_space.py", ".", cwd=self.dir)
+        self.assertIn("nothing to upgrade", r.stdout)
+        self.assertEqual(self.ctx.read_text(), once)
+
+    def test_never_overwrites_a_value_the_product_wrote(self):
+        write(self.ctx, OLD_CONTEXT.replace("open_fronts_limit: 2", "open_fronts_limit: 2\ncode_structure: docs/x.md\nplaybook_version: 1.1.0"))
+        run("upgrade_space.py", ".", cwd=self.dir)
+        text = self.ctx.read_text()
+        self.assertIn("code_structure: docs/x.md", text)
+        self.assertEqual(text.count("code_structure"), 1)
+        self.assertIn(f"playbook_version: {self.skill_version()}", text)

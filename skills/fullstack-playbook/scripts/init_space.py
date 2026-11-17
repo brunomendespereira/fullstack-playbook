@@ -18,6 +18,10 @@ import stat
 import subprocess
 import sys
 
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import notebook as nbk  # noqa: E402
+
 SKILL = pathlib.Path(__file__).resolve().parent.parent
 TEMPLATES = SKILL / "templates"
 START, END = "<!-- fullstack-playbook:start -->", "<!-- fullstack-playbook:end -->"
@@ -116,8 +120,14 @@ def main():
     root = pathlib.Path(a.root).resolve()
     nb = root / "docs" / "playbook"
 
+    new_context = not (nb / "context.md").exists()
     for name in ("context.md", "state.md", "triggers.md", "memory.md", "glossary.md"):
         copy(name, nb / name)
+    if new_context:
+        # A new notebook is born at this skill's version, so upgrade_space.py has nothing to do.
+        ctx = nb / "context.md"
+        text, _ = nbk.set_top_fields(ctx.read_text(), {"playbook_version": nbk.skill_version(SKILL)})
+        ctx.write_text(text)
     copy("project-brief.md", nb / "projects" / "maintenance" / "brief.md")
     for d in (nb / "projects" / "maintenance" / "tasks", nb / "decisions", nb / "archive"):
         ensure_dir(d)

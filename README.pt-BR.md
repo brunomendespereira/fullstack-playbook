@@ -46,7 +46,7 @@ seu-produto/
 ├── DESIGN.md                  tokens e regras de design (produtos com telas)
 ├── AGENTS.md / CLAUDE.md      um bloco curto que aponta para o caderno
 └── docs/playbook/
-    ├── context.md             stack, comandos, git, ambientes, valores, regras do produto
+    ├── context.md             stack, estrutura do código, comandos, git, ambientes, valores, regras do produto
     ├── state.md               o que está acontecendo agora e a frase de retomada
     ├── triggers.md            o que este produto faz em cada momento (fim de etapa, lançamento...)
     ├── memory.md              lições e pegadinhas, datadas
@@ -76,23 +76,29 @@ npx skills add brunomendespereira/fullstack-playbook
 
 Os scripts precisam só de Python 3 e de um shell POSIX.
 
+## Atualização
+
+Instale a versão nova do mesmo jeito (rode a CLI de novo ou substitua a pasta). A instalação não mexe no seu caderno.
+
+Cada caderno guarda a versão do playbook que o escreveu (`playbook_version` no `context.md`). No primeiro pedido da sessão seguinte, o agente vê que a skill é mais nova e migra o caderno uma vez: acrescenta os campos novos, atualiza o verificador e abre uma tarefa para o que depende da sua decisão. O que cada versão pede de um caderno que já existe está em `workflow/upgrade.md`.
+
 ## Primeiro uso
 
 Abra o agente no repositório e peça qualquer coisa, ou diga "Vamos usar o playbook aqui".
 
-- **Produto que já existe:** ele explora o código primeiro, pergunta só o que o código não responde, uma pergunta por vez e com sugestão de resposta, mostra o caderno como rascunho e grava depois do seu ok. Também transforma em tarefas o que diverge do playbook (sem testes, sem CI, regras em conflito).
-- **Produto novo:** num repositório vazio, diga o que quer construir ("um app de agendamento para barbearias"). Ele pergunta os requisitos, pesquisa a stack e registra a escolha, e escreve o `PRODUCT.md` e o `DESIGN.md` antes de qualquer código.
+- **Produto que já existe:** ele explora o código primeiro, pergunta só o que o código não responde, uma pergunta por vez e com sugestão de resposta, mostra o caderno como rascunho e grava depois do seu ok. Também mapeia a estrutura real do código (onde cada tipo de coisa mora, imports na direção errada) e transforma em tarefas o que diverge do playbook (sem testes, sem CI, regras em conflito).
+- **Produto novo:** num repositório vazio, diga o que quer construir ("um app de agendamento para barbearias"). Ele pergunta os requisitos e as qualidades que mais importam (velocidade, privacidade, custo), pesquisa a stack e a organização do código e registra as duas escolhas, e escreve o `PRODUCT.md` e o `DESIGN.md` antes de qualquer código.
 
 ## O que tem dentro
 
 | Pasta | O que guarda |
 |---|---|
 | `SKILL.md` | O roteador: regras que sempre valem, o início de todo pedido, rotas por pedido e por área |
-| `workflow/` | Etapas, onboarding, tarefas e estado, gatilhos, depuração, revisão, revisores, lançamento |
+| `workflow/` | Etapas, onboarding, tarefas e estado, gatilhos, depuração, revisão, revisores, lançamento, atualização |
 | `principles/` | Produto, arquitetura, código limpo, integridade de dados, segurança, performance, interface, testes |
 | `requirements/` | Lidos só quando o produto precisa: offline-first e recursos de IA |
 | `templates/` | Os arquivos do caderno, tarefa, plano, briefing, registro de decisão, relatório de revisão, pull request, `verify.sh` |
-| `scripts/` | `init_space.py` (cria o caderno), `check_space.py` (confere), `lock_tests.py` (trava os testes escritos antes) |
+| `scripts/` | `init_space.py` (cria o caderno), `check_space.py` (confere), `upgrade_space.py` (migra para uma versão nova), `lock_tests.py` (trava os testes escritos antes) |
 
 Toda regra cita uma fonte pública ou é consenso da indústria: OWASP ASVS e API Security Top 10, WCAG 2.2, Core Web Vitals, *Designing Data-Intensive Applications*, *Release It!*, *A Philosophy of Software Design*, *Refactoring*, Nielsen Norman Group, RFC 9457 e RFC 9110, Conventional Commits, SemVer e outras, listadas no fim de cada arquivo.
 

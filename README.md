@@ -46,7 +46,7 @@ your-product/
 ├── DESIGN.md                  tokens and design rules (products with screens)
 ├── AGENTS.md / CLAUDE.md      a short pointer block to the notebook
 └── docs/playbook/
-    ├── context.md             stack, commands, git, environments, values, product rules
+    ├── context.md             stack, code structure, commands, git, environments, values, product rules
     ├── state.md               what is happening now and the resume phrase
     ├── triggers.md            what this product does at each moment (end of step, release...)
     ├── memory.md              lessons and gotchas, dated
@@ -76,23 +76,29 @@ npx skills add brunomendespereira/fullstack-playbook
 
 The scripts need only Python 3 and a POSIX shell.
 
+## Updating
+
+Install the new version the same way (run the CLI again, or replace the folder). Your notebook is not touched by the install.
+
+Each notebook remembers the playbook version that wrote it (`playbook_version` in `context.md`). On the first request of the next session, the agent sees that the skill is newer and migrates the notebook once: it adds the new fields, refreshes the checker and opens a task for anything that needs your decision. What each version asks of an existing notebook is listed in `workflow/upgrade.md`.
+
 ## First use
 
 Open your agent in the repository and ask for anything, or say "Let's use the playbook here".
 
-- **Existing product:** it explores the code first, asks only what the code does not answer, one question at a time with a suggested answer, shows the notebook as a draft, and writes it after your ok. It also reports what diverges from the playbook (no tests, no CI, rules in conflict) as tasks.
-- **New product:** in an empty repository, say what you want to build ("a booking app for barbershops"). It asks about requirements, researches the stack and records the choice, and writes `PRODUCT.md` and `DESIGN.md` before any code.
+- **Existing product:** it explores the code first, asks only what the code does not answer, one question at a time with a suggested answer, shows the notebook as a draft, and writes it after your ok. It also maps the real code structure (where each kind of thing lives, imports that go the wrong way) and reports what diverges from the playbook (no tests, no CI, rules in conflict) as tasks.
+- **New product:** in an empty repository, say what you want to build ("a booking app for barbershops"). It asks about requirements and the qualities that matter most (speed, privacy, cost), researches the stack and the code organization and records both choices, and writes `PRODUCT.md` and `DESIGN.md` before any code.
 
 ## What is inside
 
 | Folder | What it holds |
 |---|---|
 | `SKILL.md` | The router: rules that always apply, the start of every request, routes by request and by area |
-| `workflow/` | Stages, onboarding, tasks and state, triggers, debugging, review, reviewers, release |
+| `workflow/` | Stages, onboarding, tasks and state, triggers, debugging, review, reviewers, release, upgrade |
 | `principles/` | Product, architecture, clean code, data integrity, security, performance, interface, testing |
 | `requirements/` | Read only when the product needs them: offline-first and AI features |
 | `templates/` | The notebook files, task, plan, brief, decision record, review report, pull request, `verify.sh` |
-| `scripts/` | `init_space.py` (create the notebook), `check_space.py` (check it), `lock_tests.py` (lock tests written first) |
+| `scripts/` | `init_space.py` (create the notebook), `check_space.py` (check it), `upgrade_space.py` (migrate it to a newer version), `lock_tests.py` (lock tests written first) |
 
 Every rule cites a public source or is industry consensus: OWASP ASVS and API Security Top 10, WCAG 2.2, Core Web Vitals, *Designing Data-Intensive Applications*, *Release It!*, *A Philosophy of Software Design*, *Refactoring*, Nielsen Norman Group, RFC 9457 and RFC 9110, Conventional Commits, SemVer and others, listed at the end of each file.
 
